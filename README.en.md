@@ -49,6 +49,22 @@ The chart does not need to be perfectly horizontal. picolor automatically detect
 
 It maps the patches to the correct Lab references. If position or orientation confidence is insufficient, calibration stops instead of creating an incorrect correction.
 
+## Supported platform
+
+| Item | Current requirement |
+|---|---|
+| Computer | Raspberry Pi 5 (tested with the 8 GB model) |
+| OS | 64-bit Raspberry Pi OS Desktop (Debian GNU/Linux 12 Bookworm) |
+| Camera | High Quality Camera (IMX477) connected through CSI |
+| RAW input | 12-bit `SBGGR12` |
+| Camera API | Picamera2/libcamera |
+| Not supported | Windows, macOS, USB cameras, or other CSI cameras |
+
+**A 12-bit RAW CSI camera and the Raspberry Pi camera stack are required. Windows and macOS are not supported.**
+
+> [!NOTE]
+> The current release is Raspberry Pi-specific. A typical Windows PC or Mac has neither a direct connector for a Raspberry Pi CSI camera nor the Picamera2 environment. Some embedded systems provide MIPI CSI-2, but different connectors, drivers, and RAW formats mean that picolor will not run on them without modification.
+
 ## Required hardware
 
 | Category | Equipment | Notes |
@@ -78,7 +94,7 @@ Raspberry Pi 5 CAM/DISP
 
 ## Setup
 
-64-bit Raspberry Pi OS Desktop is recommended.
+The tested OS is 64-bit Raspberry Pi OS Desktop based on Debian 12 Bookworm.
 
 ```bash
 sudo apt update

@@ -49,6 +49,22 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 判定の確信度が不足した場合は、誤った色補正を防ぐため校正を中止する。
 
+## 動作環境
+
+| 項目 | 現行版の条件 |
+|---|---|
+| 本体 | Raspberry Pi 5（8 GB版で確認） |
+| OS | Raspberry Pi OS 64-bit Desktop（Debian GNU/Linux 12 Bookworm） |
+| カメラ | High Quality Camera（IMX477）をCSI接続 |
+| RAW入力 | 12 bit `SBGGR12` |
+| カメラAPI | Picamera2／libcamera |
+| 非対応 | Windows、macOS、USBカメラ、その他のCSIカメラ |
+
+**12 bit RAW対応CSIカメラとRaspberry Piのカメラ環境が必須であり、Windows／macOSでは使用できない。**
+
+> [!NOTE]
+> 現行版はRaspberry Pi専用である。一般的なWindows PCやMacにはRaspberry Pi用CSIカメラを直接つなぐ端子とPicamera2環境がない。MIPI CSI-2を持つ組込み機器は存在するが、端子、ドライバ、RAW形式が異なるため、そのままでは動作しない。
+
 ## 必要な機材
 
 | 分類 | 機材 | 備考 |
@@ -78,7 +94,7 @@ Raspberry Pi 5 CAM/DISP
 
 ## セットアップ
 
-Raspberry Pi OS 64-bit Desktopを推奨する。
+動作確認済みOSはRaspberry Pi OS 64-bit Desktop（Debian 12 Bookworm）である。
 
 ```bash
 sudo apt update
