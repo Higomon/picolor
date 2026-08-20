@@ -2,7 +2,7 @@
 
 [English README](README.en.md)
 
-**picolor** は、Raspberry Pi とCSIカメラを使って、カメラ映像の中にある試料の色を連続して測るための実験用システムです。
+**picolor** は、Raspberry Pi とCSIカメラの**12 bit RAWデータ**を使って、カメラ映像の中にある試料の色を連続して測るための実験用システムです。
 
 一般的な色測定器へ入れにくいものでも、カメラで見えるように置ければ、色の変化をその場で観察できます。
 
@@ -37,6 +37,20 @@
 - **Linear RGB**：カメラが受けた赤・緑・青の信号を、計算に使いやすい直線的な値で表したもの
 
 画面を見ながら測定でき、値はCSVへ連続保存できます。スナップショット画像や測定時の情報も保存できます。
+
+### 12 bit RAWで、小さな色の変化を残す
+
+picolorの大きな特色は、Raspberry Pi High Quality Cameraの**12 bit RAW**を色の計算に直接使うことです。一般的なUSBカメラでよく使われる8 bit映像よりも、カメラが受けた光の強さを細かく記録できます。
+
+| 入力データ | 1つのRAW画素値あたりの理論上の段階数 | 比較 |
+|---|---:|---:|
+| 8 bit映像 | 256段階（0〜255） | 1倍 |
+| picolorの12 bit RAW | 4096段階（0〜4095） | 16倍 |
+
+この違いにより、明るさや色がゆっくり変わる試料でも、8 bit化の際に同じ値へ丸められてしまう前の細かな信号を使って計算できます。また、RAWデータなので、一般的な映像に加えられることの多いガンマ補正、色調整、JPEG圧縮などの影響を避け、センサーに近いLinear RGBを扱えます。
+
+> [!NOTE]
+> 12 bitは**2048段階ではなく4096段階**です。ただし、これは`L*`が4096段階になるという意味ではありません。picolorは12 bitのR・G・B入力から`L*`を小数値として計算します。実際に区別できる最小の色差は、センサーノイズ、照明の安定性、露光、反射、校正状態などにも左右されるため、4096段階すべてを測定精度として保証するものではありません。
 
 ### 色の基準を作る
 
@@ -123,6 +137,8 @@ picolor は2種類の基準を使います。
 公式資料：
 
 - [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
+- [Raspberry Pi High Quality Camera specifications](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
+- [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
 - [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
 - [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension)（現在は取扱終了）
 - [Datacolor SpyderCHECKR](https://www.datacolor.com/spyder/products/spyder-checkr/)

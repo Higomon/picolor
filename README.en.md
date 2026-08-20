@@ -2,7 +2,7 @@
 
 [日本語README](README.md)
 
-**picolor** is an experimental color-measurement system built with a Raspberry Pi and a CSI camera. It continuously measures the color of a selected area in the camera image.
+**picolor** is an experimental color-measurement system that uses **12-bit RAW data** from a Raspberry Pi CSI camera. It continuously measures the color of a selected area in the camera image.
 
 It is intended for samples that are difficult to place inside a conventional color meter or spectroscopic instrument, including:
 
@@ -32,6 +32,20 @@ It continuously displays and records:
 - time-series CSV data and measurement snapshots.
 
 The display can be switched between Lab and Linear RGB.
+
+### Preserving small color changes with 12-bit RAW
+
+A key feature of picolor is that it uses **12-bit RAW** data from the Raspberry Pi High Quality Camera directly in its color calculations. This records light intensity more finely than the 8-bit video streams commonly provided by USB cameras.
+
+| Input data | Theoretical levels per RAW pixel value | Relative count |
+|---|---:|---:|
+| 8-bit video | 256 levels (0–255) | 1× |
+| picolor 12-bit RAW | 4096 levels (0–4095) | 16× |
+
+This finer input preserves small signal changes before they would be rounded to the same 8-bit value. RAW access also avoids many adjustments commonly applied to ordinary video, such as gamma and color processing or JPEG compression, allowing picolor to work with Linear RGB values closer to the sensor signal.
+
+> [!NOTE]
+> Twelve bits provide **4096 levels, not 2048**. This does not mean that `L*` itself has 4096 fixed steps. picolor calculates `L*` as a floating-point value from the 12-bit R, G, and B inputs. Sensor noise, illumination stability, exposure, reflections, and calibration limit the smallest color difference that can be distinguished in practice, so 4096 input levels are not a guarantee of 4096 levels of measurement accuracy.
 
 ## Color references and calibration
 
@@ -96,6 +110,8 @@ Stable geometry and lighting matter more than expensive equipment.
 Official references:
 
 - [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
+- [Raspberry Pi High Quality Camera specifications](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
+- [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
 - [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
 - [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension) (retired product)
 - [Datacolor SpyderCHECKR](https://www.datacolor.com/spyder/products/spyder-checkr/)
