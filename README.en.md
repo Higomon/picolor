@@ -4,10 +4,14 @@
 
 An experimental system that continuously measures any selected area in a camera image as Lab or Linear RGB, using **12-bit RAW** data from a Raspberry Pi CSI camera.
 
-It is designed for stirred liquids, powders, large objects, coatings, and other samples that are difficult to place inside a conventional color meter.
+It can track color changes in samples that are difficult to place inside a conventional color meter.
 
-> [!IMPORTANT]
-> picolor is a research prototype, not a spectrometer or a certified colorimeter. Do not use it for medical, safety, regulatory, or trade decisions.
+**Examples**
+
+- Stirred liquids
+- Powders
+- Large objects
+- Coatings
 
 ## What it does
 
@@ -27,7 +31,7 @@ When compared with an 8-bit USB-camera output, picolor has 16 times as many theo
 | Input | Levels per RAW pixel value | Relative count |
 |---|---:|---:|
 | 8-bit video | 256 (0–255) | 1× |
-| picolor 12-bit RAW | 4096 (0–4095) | 16× |
+| 12-bit RAW | 4096 (0–4095) | 16× |
 
 The current code requests `SBGGR12` from the Raspberry Pi High Quality Camera. It can use fine signal changes before they are rounded to the same 8-bit value.
 
