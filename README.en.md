@@ -53,7 +53,7 @@ It maps the patches to the correct Lab references. If position or orientation co
 
 | Item | Current requirement |
 |---|---|
-| Computer | Raspberry Pi 5 (tested with the 8 GB model) |
+| Computer | Raspberry Pi 4 Model B or Raspberry Pi 5 (tested with an 8 GB Pi 5) |
 | OS | 64-bit Raspberry Pi OS Desktop (Debian 13 Trixie) |
 | Camera | High Quality Camera (IMX477) connected through CSI |
 | RAW input | 12-bit `SBGGR12` |
@@ -69,10 +69,10 @@ It maps the patches to the correct Lab references. If position or orientation co
 
 | Category | Equipment | Notes |
 |---|---|---|
-| Raspberry Pi | Raspberry Pi 5, microSD 32 GB or larger, stable USB-C supply, case and cooling | Tested with the 8 GB model and official 27 W supply |
+| Raspberry Pi | Raspberry Pi 4 Model B or Raspberry Pi 5, microSD 32 GB or larger, case and cooling | Official 15 W supply recommended for Pi 4; official 27 W supply for Pi 5. Tested with an 8 GB Pi 5 |
 | Camera | Raspberry Pi High Quality Camera, IMX477 C/CS-mount | Target of the current code |
 | Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
-| Camera link | Standard–Mini cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | Petit Studios adapter kit; now retired |
+| Camera link | Model-specific camera cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | The first cable differs between Pi 4 and Pi 5. Petit Studios adapter kit; now retired |
 | Color references | Color-reference chart (48-patch Spyder Checkr) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
 | Capture setup (small samples) | [HAKUBA LED Studio Box 60 (AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
 | Capture setup (large samples) | White LEDs, diffuser or softboxes, white background, fixed mounts | Keep camera, lighting, and sample fixed |
@@ -80,9 +80,14 @@ It maps the patches to the correct Lab references. If position or orientation co
 
 ### Camera connection
 
+| Raspberry Pi | Camera connector | First cable |
+|---|---|---|
+| Pi 4 Model B | Standard 15-pin `CAMERA` | Standard–Standard |
+| Pi 5 | Mini 22-pin `CAM/DISP` | Standard–Mini |
+
 ```text
-Raspberry Pi 5 CAM/DISP
-  → Standard–Mini camera cable
+Raspberry Pi
+  → model-specific camera cable shown above
   → CSI–HDMI adapter board
   → standard HDMI cable
   → CSI–HDMI adapter board

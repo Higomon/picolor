@@ -53,7 +53,7 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 | 項目 | 現行版の条件 |
 |---|---|
-| 本体 | Raspberry Pi 5（8 GB版で確認） |
+| 本体 | Raspberry Pi 4 Model B／Raspberry Pi 5（Pi 5の8 GB版で確認） |
 | OS | Raspberry Pi OS 64-bit Desktop（Debian 13 Trixie） |
 | カメラ | High Quality Camera（IMX477）をCSI接続 |
 | RAW入力 | 12 bit `SBGGR12` |
@@ -69,10 +69,10 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 | 分類 | 機材 | 備考 |
 |---|---|---|
-| Raspberry Pi | Raspberry Pi 5、microSD 32 GB以上、安定したUSB-C電源、ケース・冷却 | 8 GB版、公式27 W電源で確認 |
+| Raspberry Pi | Raspberry Pi 4 Model BまたはRaspberry Pi 5、microSD 32 GB以上、ケース・冷却 | 電源はPi 4が公式15 W、Pi 5が公式27 Wを推奨。Pi 5の8 GB版で確認 |
 | カメラ | Raspberry Pi High Quality Camera（IMX477、C/CSマウント） | 現行コードの対象 |
 | レンズ | Raspberry Pi 6 mm広角レンズ（CSマウント） | 16 mmレンズも選択可 |
-| カメラ配線 | Standard–Miniケーブル、PimoroniのCSI–HDMI中継基板2枚、標準HDMIケーブル、短い15ピンCSIケーブル | 中継基板はPetit Studios製、現在は取扱終了 |
+| カメラ配線 | 機種別カメラケーブル、PimoroniのCSI–HDMI中継基板2枚、標準HDMIケーブル、短い15ピンCSIケーブル | Pi 4とPi 5では最初のケーブルが異なる。中継基板はPetit Studios製、現在は取扱終了 |
 | 色基準 | 色基準チャート（Spyder Checkr 48色モデル）、18%グレーカード | 実機のグレーカードは銀一シルクグレーカード Ver.2 |
 | 撮影環境（小型試料） | [HAKUBA LEDスタジオボックス60（AMZLEDSBX60）](https://www.amazon.co.jp/dp/B0923V3439)、固定具 | 約64×62×63 cm。LEDと背景布3色（白・黒・オレンジ）が付属 |
 | 撮影環境（大型試料） | 白色LED、拡散板またはソフトボックス、白背景、固定具 | カメラ・照明・試料を固定 |
@@ -80,9 +80,14 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 ### カメラ接続
 
+| Raspberry Pi | カメラ端子 | 最初のケーブル |
+|---|---|---|
+| Pi 4 Model B | 標準15ピン `CAMERA` | Standard–Standard |
+| Pi 5 | Mini 22ピン `CAM/DISP` | Standard–Mini |
+
 ```text
-Raspberry Pi 5 CAM/DISP
-  → Standard–Miniカメラケーブル
+Raspberry Pi
+  → 上表の機種別カメラケーブル
   → CSI–HDMI中継基板
   → 標準HDMIケーブル
   → CSI–HDMI中継基板
