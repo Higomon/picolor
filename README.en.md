@@ -74,7 +74,8 @@ It maps the patches to the correct Lab references. If position or orientation co
 | Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
 | Camera link | Standard–Mini cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | Petit Studios adapter kit; now retired |
 | Color references | Color-reference chart (48-patch Spyder Checkr) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
-| Capture setup | White LEDs, diffuser or light tent, white background, fixed mounts | Keep camera, lighting, and sample fixed |
+| Capture setup (small samples) | [HAKUBA LED Studio Box 60 (AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
+| Capture setup (large samples) | White LEDs, diffuser or softboxes, white background, fixed mounts | Keep camera, lighting, and sample fixed |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
 
 ### Camera connection
