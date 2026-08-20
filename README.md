@@ -168,9 +168,7 @@ Spyder Checkrは水平でなくてもよいが、全体を画面内へ入れ、�
 </details>
 
 <details>
-<summary><strong>公開範囲・技術資料</strong></summary>
-
-公開版は動作に必要な`csi/`内のPythonコードのみを含む。SSH設定、接続先、パスワード、個人用デプロイスクリプト、校正データ、実験データは含まない。
+<summary><strong>技術資料</strong></summary>
 
 - [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
 - [High Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)

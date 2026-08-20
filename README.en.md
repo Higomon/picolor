@@ -168,9 +168,7 @@ Saved data can include time-series CSV, timestamps, exposure, gain, reference st
 </details>
 
 <details>
-<summary><strong>Public scope and technical references</strong></summary>
-
-The public repository contains only the required Python code under `csi/`. It excludes SSH settings, host addresses, passwords, private deployment scripts, calibration data, and experimental data.
+<summary><strong>Technical references</strong></summary>
 
 - [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
 - [High Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
