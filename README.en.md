@@ -51,9 +51,12 @@ This finer input preserves small signal changes before they would be rounded to 
 
 picolor uses two physical references:
 
-1. **Datacolor SpyderCHECKR 48**
-   - Its 48 known color patches are used to correct the camera's color response.
-   - picolor detects the chart position and orientation and reads all patches.
+1. **Datacolor Spyder Checkr, 48-patch model**
+   - The unit actually used with picolor is the **rigid, folding two-panel model** with 48 patches (Japanese JAN product code `4571380541088`).
+   - SpyderCHECKR 24, Spyder Checkr Photo, and Spyder Checkr Video use different patch layouts and are not supported by the current code.
+   - The known Lab values of its 48 patches are used to correct the camera's color response.
+   - The chart does not have to be aligned perfectly with the horizontal edge of the image. picolor automatically detects its **position, in-image tilt or rotation, two panels, and the centers of all 48 patches**, then maps them to the correct reference colors for calibration.
+   - If chart position or orientation cannot be identified with sufficient confidence, picolor stops calibration instead of creating an incorrect color correction.
 2. **18% gray card**
    - It provides a stable in-frame reference during measurement.
    - It is used to monitor changes in brightness and color.
@@ -89,7 +92,9 @@ The system also calibrates camera dark noise, illumination non-uniformity, and w
   - Connects the camera-side adapter board to the HQ Camera.
 - **Stable USB-C power supply** — official Raspberry Pi 27 W supply or equivalent 5 V / 5 A supply
 - **microSD card, 32 GB or larger**, with 64-bit Raspberry Pi OS
-- **Datacolor SpyderCHECKR 48**
+- **Datacolor Spyder Checkr, 48-patch rigid folding two-panel model**
+  - The unit used for this system has Japanese JAN product code `4571380541088`.
+  - Use the model that opens into two panels containing 48 patches in total, not the 24, Photo, or Video model.
 - **18% gray card**
 - **Stable white LED lighting**
 - **Light tent, diffuser, or softbox**
@@ -114,7 +119,7 @@ Official references:
 - [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
 - [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
 - [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension) (retired product)
-- [Datacolor SpyderCHECKR](https://www.datacolor.com/spyder/products/spyder-checkr/)
+- [Datacolor Spyder Checkr, 48-patch model](https://www.datacolor.com/spyder/products/spyder-checkr/)
 
 ### Camera cable connection
 
@@ -175,7 +180,10 @@ Follow the on-screen instructions in this order:
 1. Fit the lens cap and press `D` to capture dark noise.
 2. Remove the cap and all samples, show only a uniform white background, and press `F` to correct illumination non-uniformity.
 3. Place the 18% gray card and press `W` to set white balance and the measurement reference.
-4. Place the SpyderCHECKR 48 and press `P` to correct the camera's color response.
+4. Open and place the 48-patch Spyder Checkr, then press `P`.
+   - It does not need to be perfectly horizontal. Keep the complete chart inside the image and make sure that reflections or shadows do not hide its patches.
+   - picolor automatically detects the chart position and tilt, then uses all 48 patches to correct the camera's color response.
+   - Detection can fail if the chart is turned far sideways, partly outside the image, strongly reflected, or heavily shadowed.
 5. Remove the chart. Put the gray card inside the `Ref` region and the sample inside the `Target` region.
 
 Wait until the display reports that measurement is allowed.

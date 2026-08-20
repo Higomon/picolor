@@ -56,9 +56,12 @@ picolorの大きな特色は、Raspberry Pi High Quality Cameraの**12 bit RAW**
 
 picolor は2種類の基準を使います。
 
-1. **Datacolor SpyderCHECKR 48**
-   - 48色の既知の値を使い、カメラの色のずれを補正します。
-   - チャートの位置と向きを検出し、48色をまとめて読み取ります。
+1. **Datacolor Spyder Checkr（48色モデル）**
+   - picolorで実際に使用したのは、**見開き2面のハードケース型**（48色、JAN `4571380541088`）です。
+   - SpyderCHECKR 24、Spyder Checkr Photo、Spyder Checkr Videoとはパッチの構成が異なるため、現行コードの対象ではありません。
+   - 48色の既知のLab値を使い、カメラの色のずれを補正します。
+   - チャートを画面の水平線へ厳密に合わせる必要はありません。picolorが撮影画像からチャートの**位置、傾き（回転）、左右2面、48個の色パッチの中心**を自動検出し、正しい色の並びに対応させて補正へ使います。
+   - 位置や向きの判定に十分な確信がない場合は、誤った色補正を作らないように校正を中止します。
 2. **18%グレーカード**
    - 測定中の明るさや色の変化を監視する基準として使います。
    - 試料と同じ画面内へ置いて使います。
@@ -112,8 +115,9 @@ picolor は2種類の基準を使います。
   - Raspberry Pi公式27 W電源、または5 V / 5 A相当を推奨します。
 - **microSDカード 32 GB以上**
   - Raspberry Pi OS 64-bitを書き込んで使います。
-- **Datacolor SpyderCHECKR 48**
-  - カメラの色補正に使います。
+- **Datacolor Spyder Checkr（48色モデル、見開き2面のハードケース型）**
+  - 実機で使用した製品のJANは `4571380541088` です。
+  - 24／Photo／Videoモデルではなく、左右2面を開くと合計48色になるモデルを使用します。
 - **18%グレーカード**
   - 実機では銀一シルクグレーカード Ver.2を使用しています。
 - **一定の明るさを保てる白色LED照明**
@@ -141,7 +145,7 @@ picolor は2種類の基準を使います。
 - [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
 - [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
 - [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension)（現在は取扱終了）
-- [Datacolor SpyderCHECKR](https://www.datacolor.com/spyder/products/spyder-checkr/)
+- [Datacolor Spyder Checkr（日本公式、48色モデル）](https://www.datacolor.jp/camera-solution/spyder-checkr.html)
 
 ### カメラケーブルの接続
 
@@ -216,9 +220,11 @@ python3 -u -c "from csi.main import main; main()"
    - 画面内の明るさのむらを補正します。
 3. 18%グレーカードを置いて `W`
    - 白バランスと測定中の基準値を作ります。
-4. SpyderCHECKR 48を置いて `P`
-   - 48色を使ってカメラの色を補正します。
-5. SpyderCHECKR 48を外し、`Ref`枠にグレーカード、`Target`枠に試料を置きます。
+4. Spyder Checkr（48色モデル）を見開きにして置き、`P`
+   - 画面の水平線にぴったり合わせる必要はありません。チャート全体が画面内へ入り、48色が照明の反射や影で隠れないように置きます。
+   - picolorがチャートの位置と傾きを自動検出し、48色を使ってカメラの色を補正します。
+   - 大きく横倒しにした場合、一部が画面外にある場合、強い反射や影がある場合は検出できないことがあります。
+5. Spyder Checkrを外し、`Ref`枠にグレーカード、`Target`枠に試料を置きます。
 
 画面が測定可能な状態を示してから本番測定を始めます。
 
