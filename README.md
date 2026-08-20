@@ -1,305 +1,192 @@
 # picolor
 
-[English README](README.en.md)
+**日本語** ・ [English](README.en.md)
 
-**picolor** は、Raspberry Pi とCSIカメラの**12 bit RAWデータ**を使って、カメラ映像の中にある試料の色を連続して測るための実験用システムです。
+Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置をLab／Linear RGBで連続測定する実験用システムである。
 
-一般的な色測定器へ入れにくいものでも、カメラで見えるように置ければ、色の変化をその場で観察できます。
-
-たとえば、次のような用途を想定しています。
-
-- 液体を撹拌しながら、色が変わる様子を追う
-- 大型物や装置の一部など、測定器へ入らないものを測る
-- 粉体、粒、シート、塗膜、印刷物などの表面色を測る
-- 反応、乾燥、退色などに伴う色の変化を連続記録する
-- 同じ条件で撮影した試料どうしを比較する
+撹拌中の液体、粉体、大型物、塗膜など、一般的な測色器へ入れにくい試料の色変化をその場で記録できる。
 
 > [!IMPORTANT]
-> picolor は研究・試作向けのカメラ式測色システムです。分光器や市販の校正済み測色計を置き換えるものではありません。医療、安全判定、法規制への適合判定、取引証明などには使用しないでください。
+> 研究・試作向けであり、分光器や校正済み測色計の代替ではない。医療、安全、法規、取引証明には使用しないこと。
 
-## 何ができるのか
+## できること
 
-### 映像上の2か所を同時に見る
+| 機能 | 内容 |
+|---|---|
+| 任意位置の連続測定 | 可動式の`Ref`枠で18%グレーカード、`Target`枠で試料を同時測定 |
+| 2種類の色表示 | Lab（`L*`、`a*`、`b*`）とLinear RGBを切り替え |
+| 12 bit RAW解析 | センサーに近いRAW信号から色を計算 |
+| 色補正 | Spyder Checkr 48色の既知Lab値を基準にカメラの色ずれを補正 |
+| 測定監視 | 安定性、照明変化、むら、白飛び、再校正の必要性を表示 |
+| 記録 | 時系列CSV、撮影条件、警告、スナップショットを保存 |
 
-画面には、基準物を見る `Ref` と、試料を見る `Target` の2つの測定枠があります。枠は画面上で移動・調整できます。
+## 12 bit RAW
 
-- `Ref`：18%グレーカードなど、変化しない基準物を置く場所
-- `Target`：色を測りたい試料を置く場所
+比較対象のUSBカメラが8 bit出力の場合、picolorの入力階調は理論上16倍となる。
 
-同じ映像内の基準物と試料を同時に見ることで、照明が少し明るくなったり暗くなったりした影響を小さくします。
-
-### 2種類の値を連続表示する
-
-- **Lab**：人が感じる明るさと色味に近い形で表す値
-  - `L*`：明るさ
-  - `a*`：緑方向 ↔ 赤方向
-  - `b*`：青方向 ↔ 黄方向
-- **Linear RGB**：カメラが受けた赤・緑・青の信号を、計算に使いやすい直線的な値で表したもの
-
-画面を見ながら測定でき、値はCSVへ連続保存できます。スナップショット画像や測定時の情報も保存できます。
-
-### 12 bit RAWで、小さな色の変化を残す
-
-picolorの大きな特色は、Raspberry Pi High Quality Cameraの**12 bit RAW**を色の計算に直接使うことです。一般的なUSBカメラでよく使われる8 bit映像よりも、カメラが受けた光の強さを細かく記録できます。
-
-| 入力データ | 1つのRAW画素値あたりの理論上の段階数 | 比較 |
+| 入力 | RAW画素値の段階数 | 比較 |
 |---|---:|---:|
-| 8 bit映像 | 256段階（0〜255） | 1倍 |
-| picolorの12 bit RAW | 4096段階（0〜4095） | 16倍 |
+| 8 bit映像 | 256（0〜255） | 1倍 |
+| picolorの12 bit RAW | 4096（0〜4095） | 16倍 |
 
-この違いにより、明るさや色がゆっくり変わる試料でも、8 bit化の際に同じ値へ丸められてしまう前の細かな信号を使って計算できます。また、RAWデータなので、一般的な映像に加えられることの多いガンマ補正、色調整、JPEG圧縮などの影響を避け、センサーに近いLinear RGBを扱えます。
+現行コードはRaspberry Pi High Quality Cameraの`SBGGR12`を使う。8 bit化で同じ値へ丸められる前の細かな変化を色計算へ渡せる点が特色である。
 
-> [!NOTE]
-> 12 bitは**2048段階ではなく4096段階**です。ただし、これは`L*`が4096段階になるという意味ではありません。picolorは12 bitのR・G・B入力から`L*`を小数値として計算します。実際に区別できる最小の色差は、センサーノイズ、照明の安定性、露光、反射、校正状態などにも左右されるため、4096段階すべてを測定精度として保証するものではありません。
+`L*`自体が4096段階になるわけではない。12 bitのRGB入力から小数値として計算する。実際の識別精度はセンサーノイズ、照明、露光、反射、校正にも左右される。
 
-### 色の基準を作る
+## Spyder Checkrの自動検出
 
-picolor は2種類の基準を使います。
+- 使用製品：**Datacolor Spyder Checkr 48色モデル**
+- 形状：見開き2面のハードケース型
+- JAN：`4571380541088`
+- 対象外：SpyderCHECKR 24、Spyder Checkr Photo／Video
 
-1. **Datacolor Spyder Checkr（48色モデル）**
-   - picolorで実際に使用したのは、**見開き2面のハードケース型**（48色、JAN `4571380541088`）です。
-   - SpyderCHECKR 24、Spyder Checkr Photo、Spyder Checkr Videoとはパッチの構成が異なるため、現行コードの対象ではありません。
-   - 48色の既知のLab値を使い、カメラの色のずれを補正します。
-   - チャートを画面の水平線へ厳密に合わせる必要はありません。picolorが撮影画像からチャートの**位置、傾き（回転）、左右2面、48個の色パッチの中心**を自動検出し、正しい色の並びに対応させて補正へ使います。
-   - 位置や向きの判定に十分な確信がない場合は、誤った色補正を作らないように校正を中止します。
-2. **18%グレーカード**
-   - 測定中の明るさや色の変化を監視する基準として使います。
-   - 試料と同じ画面内へ置いて使います。
+チャートを画面の水平線へ厳密に合わせる必要はない。picolorが次を自動検出し、48色を正しいLab基準へ対応させる。
 
-暗いときのカメラノイズ、画面内の照明むら、白バランスも測定前に補正します。
+- 画面内の位置
+- 傾き・回転
+- 左右2面
+- 48個の色パッチ中心
 
-### 測定状態を監視する
-
-測定中は、次のような状態を画面へ表示します。
-
-- 値が安定しているか
-- 照明の明るさや色が大きく変わっていないか
-- 基準部分に照明むらがないか
-- 明るすぎて白飛びしていないか
-- 再校正が必要か
-- 本番測定を始めてよい状態か
-
-条件が大きく変わった場合は、再校正を促します。
-
-## 向いている試料
-
-| 試料・場面 | 使い方の例 | 注意点 |
-|---|---|---|
-| 撹拌中の液体 | 反応槽や透明容器の色を連続測定 | 照明の映り込み、泡、容器の色を一定にする |
-| 粉体・粒状物 | トレーに広げて表面色を測定 | 厚さ、表面のならし方、影をそろえる |
-| 大型物 | カメラと照明を固定して一部を測定 | 距離、角度、周囲光を変えない |
-| 塗膜・印刷物・シート | 指定位置の色を比較 | 表面の光沢と反射方向をそろえる |
-| 時間変化する試料 | 乾燥、退色、反応などをCSV記録 | カメラと基準物を動かさない |
+判定の確信度が不足した場合は、誤った色補正を防ぐため校正を中止する。
 
 ## 必要な機材
 
-### 必須
+| 分類 | 機材 | 備考 |
+|---|---|---|
+| Raspberry Pi | Raspberry Pi 5、microSD 32 GB以上、安定したUSB-C電源、ケース・冷却 | 8 GB版、公式27 W電源で確認 |
+| カメラ | Raspberry Pi High Quality Camera（IMX477、C/CSマウント） | 現行コードの対象 |
+| レンズ | Raspberry Pi 6 mm広角レンズ（CSマウント） | 16 mmレンズも選択可 |
+| カメラ配線 | Standard–Miniケーブル、PimoroniのCSI–HDMI中継基板2枚、標準HDMIケーブル、短い15ピンCSIケーブル | 中継基板はPetit Studios製、現在は取扱終了 |
+| 色基準 | Spyder Checkr 48色モデル、18%グレーカード | 実機のグレーカードは銀一シルクグレーカード Ver.2 |
+| 撮影環境 | 白色LED、拡散板または撮影ボックス、白背景、固定具 | カメラ・照明・試料を固定 |
+| 校正・操作 | レンズキャップ、HDMIモニター、キーボード、マウス | 初期設定と画面操作に使用 |
 
-- **Raspberry Pi 5**
-  - 8 GB RAMモデルで動作確認しています。
-- **Raspberry Pi High Quality Camera（IMX477、C/CSマウント版）**
-  - 現行コードはこのCSIカメラを前提にしています。
-- **Raspberry Pi公式推奨 6 mm 広角レンズ（CSマウント）**
-  - 最初の1本として扱いやすいレンズです。
-  - 離れた場所を狭い範囲で撮る場合は、公式推奨16 mmレンズも選べます。
-- **短いRaspberry Pi Camera Cable Standard–Mini**
-  - Pi 5の22ピン端子と、CSI–HDMI変換基板の15ピン端子をつなぎます。
-- **Pimoroniで販売されていた Raspberry Pi Camera HDMI Cable Extension**
-  - Petit Studios製の2枚組CSI–HDMI中継基板です。
-  - 長い平型CSIケーブルを使わず、途中を丈夫なHDMIケーブルで延長するために使用しています。
-- **標準HDMIケーブル**
-  - CSI–HDMI中継基板どうしを接続します。各信号線とシールドが正しく配線された、短く品質のよいケーブルを推奨します。
-- **短い15ピンCSIカメラケーブル**
-  - カメラ側のCSI–HDMI中継基板とHQ Cameraを接続します。
-- **安定したUSB-C電源**
-  - Raspberry Pi公式27 W電源、または5 V / 5 A相当を推奨します。
-- **microSDカード 32 GB以上**
-  - Raspberry Pi OS 64-bitを書き込んで使います。
-- **Datacolor Spyder Checkr（48色モデル、見開き2面のハードケース型）**
-  - 実機で使用した製品のJANは `4571380541088` です。
-  - 24／Photo／Videoモデルではなく、左右2面を開くと合計48色になるモデルを使用します。
-- **18%グレーカード**
-  - 実機では銀一シルクグレーカード Ver.2を使用しています。
-- **一定の明るさを保てる白色LED照明**
-- **照明を柔らかくする撮影ボックス、拡散板、またはソフトボックス**
-- **カメラを固定する三脚、アーム、または治具**
-- **白く均一な背景**
-- **レンズキャップ**
-  - 暗いときのノイズ補正に使います。
-- **HDMIモニター、キーボード、マウス**
-  - 初期設定と画面操作に使います。
-
-### 試料の大きさに応じて選ぶもの
-
-- 小物：60 cm前後のLED撮影ボックス
-- 大型物：LEDライト2灯、ソフトボックス2台、照明スタンド2台
-- 長時間運転：Raspberry Pi用ケースと冷却ファン、またはActive Cooler
-- 固定治具：カメラ、グレーカード、試料の位置を毎回同じにできるもの
-
-機材名は構成例です。最も重要なのは、高価な製品を選ぶことではなく、**カメラ・照明・基準物・試料の位置を動かさず、毎回同じ条件を作ること**です。
-
-公式資料：
-
-- [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
-- [Raspberry Pi High Quality Camera specifications](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
-- [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
-- [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
-- [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension)（現在は取扱終了）
-- [Datacolor Spyder Checkr（日本公式、48色モデル）](https://www.datacolor.jp/camera-solution/spyder-checkr.html)
-
-### カメラケーブルの接続
-
-実機では次の順番で接続しています。
+### カメラ接続
 
 ```text
-Raspberry Pi 5のCAM/DISP端子
-  → 短いStandard–Miniカメラケーブル
+Raspberry Pi 5 CAM/DISP
+  → Standard–Miniカメラケーブル
   → CSI–HDMI中継基板
   → 標準HDMIケーブル
   → CSI–HDMI中継基板
-  → 短い15ピンCSIカメラケーブル
-  → Raspberry Pi High Quality Camera
+  → 15ピンCSIカメラケーブル
+  → High Quality Camera
 ```
 
 > [!CAUTION]
-> このHDMIケーブルはカメラ信号の延長配線として使います。Pi本体のmicro-HDMI映像出力端子や、モニターのHDMI端子へ接続してはいけません。接続・取り外しは必ずRaspberry Piの電源を切ってから行ってください。Pimoroniの元製品ページでは、データ線のシールドがないHDMIケーブルではカメラを認識できない場合があると案内されています。
+> HDMIケーブルはカメラ信号の延長配線に使う。Piの映像出力端子やモニターへ接続してはならない。配線はPiの電源を切って行うこと。信号線とシールドが正しく結線された短いHDMIケーブルを推奨する。
 
-## ソフトウェアの準備
+## セットアップ
 
-### 1. Raspberry Pi OSを用意する
-
-Raspberry Pi OS 64-bitのDesktop版を推奨します。画面表示を行うため、Lite版よりDesktop版の方が簡単です。
-
-OSを起動したら、ターミナルで次を実行します。
+Raspberry Pi OS 64-bit Desktopを推奨する。
 
 ```bash
 sudo apt update
 sudo apt install -y \
-  git \
-  python3 \
-  python3-numpy \
-  python3-opencv \
-  python3-pil \
-  python3-picamera2 \
-  python3-scipy \
-  fonts-noto-cjk
+  git python3 python3-numpy python3-opencv python3-pil \
+  python3-picamera2 python3-scipy fonts-noto-cjk
 ```
 
-### 2. カメラを確認する
-
-Piの電源を切ってから、上の接続図どおりにカメラと中継基板を接続してください。Pi 5と最初の中継基板の間にはStandard–Miniケーブルを使います。
-
-再起動後、次のコマンドで映像が表示されることを確認します。
+カメラ映像を確認する。
 
 ```bash
 rpicam-hello --timeout 5000
 ```
 
-### 3. picolorを取得する
+picolorを取得して起動する。
 
 ```bash
 git clone https://github.com/Higomon/picolor.git
 cd picolor
-```
-
-### 4. 起動する
-
-```bash
 python3 -u -c "from csi.main import main; main()"
 ```
 
-初回起動時は校正データがないため、そのまま本番測定を始めないでください。
-
 ## 初回の校正
 
-画面の指示に従い、次の順番でキーを押します。
+画面の案内に従い、次の順で実行する。
 
-1. レンズキャップを付けて `D`
-   - カメラが暗い場所で出すノイズを記録します。
-2. キャップを外し、試料とグレーカードを外して、白い背景だけを写して `F`
-   - 画面内の明るさのむらを補正します。
-3. 18%グレーカードを置いて `W`
-   - 白バランスと測定中の基準値を作ります。
-4. Spyder Checkr（48色モデル）を見開きにして置き、`P`
-   - 画面の水平線にぴったり合わせる必要はありません。チャート全体が画面内へ入り、48色が照明の反射や影で隠れないように置きます。
-   - picolorがチャートの位置と傾きを自動検出し、48色を使ってカメラの色を補正します。
-   - 大きく横倒しにした場合、一部が画面外にある場合、強い反射や影がある場合は検出できないことがあります。
-5. Spyder Checkrを外し、`Ref`枠にグレーカード、`Target`枠に試料を置きます。
+| 順 | キー | 置くもの | 目的 |
+|---:|:---:|---|---|
+| 1 | `D` | レンズキャップ | 暗所ノイズ補正 |
+| 2 | `F` | 均一な白背景 | 照明むら補正 |
+| 3 | `W` | 18%グレーカード | 白バランスと相対基準 |
+| 4 | `P` | 見開いたSpyder Checkr 48 | 48色による色補正 |
 
-画面が測定可能な状態を示してから本番測定を始めます。
+Spyder Checkrは水平でなくてもよいが、全体を画面内へ入れ、反射や影でパッチを隠さないこと。横倒し、画面外、強い反射・影では検出に失敗する場合がある。
 
-## 測定する
+## 測定
 
-1. `Ref`枠を18%グレーカードへ合わせます。
-2. `Target`枠を試料の測りたい位置へ合わせます。
-3. 値が安定し、測定可能と表示されるまで待ちます。
-4. `m`を押し、保存するファイル名を入力します。
-5. 測定中は値がCSVへ連続保存されます。
-6. `s`で記録を停止します。
-7. `q`または`ESC`で終了します。
+1. `Ref`枠を18%グレーカードへ合わせる。
+2. `Target`枠を試料の測定位置へ合わせる。
+3. 測定可能表示を待つ。
+4. `m`で記録を開始し、`s`で停止する。
+5. `q`または`ESC`で終了する。
 
-主なキー：
+<details>
+<summary><strong>向いている試料と注意点</strong></summary>
+
+| 試料 | 用途 | 注意点 |
+|---|---|---|
+| 撹拌中の液体 | 反応や調色の追跡 | 泡、容器、映り込みを一定にする |
+| 粉体・粒 | 表面色の比較 | 厚さ、ならし方、影をそろえる |
+| 大型物 | 固定位置の連続測定 | 距離、角度、周囲光を変えない |
+| 塗膜・印刷物 | 指定位置の比較 | 光沢と反射方向をそろえる |
+| 時間変化する試料 | 乾燥、退色、反応の記録 | カメラと基準物を動かさない |
+
+</details>
+
+<details>
+<summary><strong>操作キーと保存内容</strong></summary>
 
 | キー | 動作 |
-|---|---|
-| `D` | 暗いときのノイズを補正 |
-| `F` | 照明むらを補正 |
-| `W` | グレーカードを使った基準作成 |
-| `P` | SpyderCHECKR 48による色補正 |
+|:---:|---|
+| `D` / `F` / `W` / `P` | 暗所／照明むら／グレーカード／48色の校正 |
 | `V` | グレーカード状態の確認 |
-| `Tab` | Lab / Linear RGBの表示切り替え |
-| `m` | 連続記録を開始 |
-| `s` | 連続記録を停止 |
-| `c` | 条件変更後の再校正を開始 |
+| `Tab` | Lab／Linear RGBの切り替え |
+| `m` / `s` | 連続記録の開始／停止 |
+| `c` | 条件変更後の再校正 |
 | `q` / `ESC` | 終了 |
 
-## 保存されるデータ
+保存対象は時系列CSV、時刻、露光、ゲイン、基準状態、警告、スナップショット、校正記録である。
 
-- LabまたはLinear RGBの時系列CSV
-- 測定時刻
-- カメラの露光時間とゲイン
-- 基準部分の明るさ・色・照明むら
-- 安定性や警告の状態
-- スナップショット画像と測定値
-- 日付ごとの校正データと判定記録
+- 校正：`calibration/`
+- 測定結果：`/home/<user>/picolor/results/`
 
-校正データは`calibration/`、測定結果はRaspberry Pi上の`/home/<user>/picolor/results/`へ保存されます。これらには実験条件や試料名が含まれる場合があるため、GitHubへ追加しないでください。
+</details>
 
-## できないこと・注意点
+<details>
+<summary><strong>測定原理と限界</strong></summary>
 
-- 波長ごとの光の強さを測る装置ではありません。
-- UV-Vis分光光度計の吸光度スペクトルは測れません。
-- 透明液体の透過色を厳密に測るには、専用のセル、光路、背景が別途必要です。
-- 光沢の強い試料では、照明の映り込みが測定値へ大きく影響します。
-- カメラ、照明、距離、角度、レンズの絞りを変えた場合は再校正が必要です。
-- SpyderCHECKRやグレーカードは、汚れ、退色、個体差の影響を受けます。
-- 市販測色計と同等の精度を保証するものではありません。用途ごとに既知試料との比較検証を行ってください。
+- `Ref`と`Target`を同じ画像で測り、照明変動の影響を抑える。
+- Spyder Checkrを既知Lab値による絶対基準、18%グレーカードを測定中の相対基準として使う。
+- 暗所ノイズ、照明むら、白バランスも補正する。
+- 波長別スペクトルやUV-Vis吸光度は測れない。
+- 光沢、泡、影、周囲光、距離、角度の変化は測定値へ影響する。
+- カメラ、照明、距離、絞り、基準配置を変えた場合は再校正が必要である。
+- 市販測色計と同等の精度は保証しない。用途ごとに既知試料で検証すること。
 
-## ソースコード
+</details>
 
-```text
-csi/
-├── main.py                 # 起動と全体の流れ
-├── camera.py               # CSIカメラとRAW画像の取得
-├── colorimeter_common.py   # 色計算、校正、判定、保存
-├── key_handler.py          # キーボード操作と校正手順
-├── overlay.py              # 画面表示
-├── logger.py               # CSV記録
-├── flat_2d_smoothed.py     # 照明むら補正
-├── flat_radial_profile.py  # レンズ周辺減光の補助処理
-└── key_commands.py         # キー判定
-```
+<details>
+<summary><strong>公開範囲・技術資料</strong></summary>
 
-この公開版には、SSH情報、接続先情報、パスワード、実験データ、校正データ、個人用デプロイスクリプトは含まれていません。
+公開版は動作に必要な`csi/`内のPythonコードのみを含む。SSH設定、接続先、パスワード、個人用デプロイスクリプト、校正データ、実験データは含まない。
 
-## 開発状況
+- [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
+- [High Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
+- [RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
+- [Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
+- [Pimoroni CSI–HDMI extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension)
+- [Datacolor Spyder Checkr](https://www.datacolor.jp/camera-solution/spyder-checkr.html)
 
-本ソフトウェアは実験・研究用途として開発中です。実機構成やRaspberry Pi OSの更新により動作が変わる可能性があります。
+</details>
 
 ## ライセンス
 
-現在、再利用ライセンスは設定していません。コードの利用・改変・再配布を希望する場合は、リポジトリ所有者へ確認してください。
+[MIT License](LICENSE)
 
-## 商標について
+## 状態
 
-Raspberry PiはRaspberry Pi Ltdの商標です。DatacolorおよびSpyderCHECKRは各権利者の商標です。本プロジェクトは各社が提供・保証する公式製品ではありません。
+実験・研究用途として開発中である。Raspberry Pi OSやハードウェアの更新により動作が変わる場合がある。
+
+Raspberry Pi、Datacolor、SpyderCHECKRは各権利者の商標である。本プロジェクトは各社の公式製品ではない。

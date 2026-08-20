@@ -1,163 +1,93 @@
 # picolor
 
-[日本語README](README.md)
+[日本語](README.md) ・ **English**
 
-**picolor** is an experimental color-measurement system that uses **12-bit RAW data** from a Raspberry Pi CSI camera. It continuously measures the color of a selected area in the camera image.
+An experimental system that continuously measures any selected area in a camera image as Lab or Linear RGB, using **12-bit RAW** data from a Raspberry Pi CSI camera.
 
-It is intended for samples that are difficult to place inside a conventional color meter or spectroscopic instrument, including:
-
-- liquids whose color changes while being stirred;
-- large objects or parts of installed equipment;
-- powders, granules, sheets, coatings, and printed materials;
-- samples that change during a reaction, drying, or fading process.
+It is designed for stirred liquids, powders, large objects, coatings, and other samples that are difficult to place inside a conventional color meter.
 
 > [!IMPORTANT]
-> picolor is a research prototype. It is not a spectrometer or a certified commercial colorimeter. Do not use it for medical decisions, safety decisions, regulatory compliance, or trade certification.
+> picolor is a research prototype, not a spectrometer or a certified colorimeter. Do not use it for medical, safety, regulatory, or trade decisions.
 
-## What it can do
+## What it does
 
-picolor displays two movable measurement regions:
+| Feature | Description |
+|---|---|
+| Continuous measurement | A movable `Ref` region observes an 18% gray card while `Target` observes the sample |
+| Two color views | Switch between Lab (`L*`, `a*`, `b*`) and Linear RGB |
+| 12-bit RAW analysis | Calculate color from signals close to the camera sensor output |
+| Color correction | Correct the camera response against the known Lab values of 48 Spyder Checkr patches |
+| Quality monitoring | Report stability, illumination changes, non-uniformity, clipping, and recalibration needs |
+| Recording | Save time-series CSV data, capture settings, warnings, and snapshots |
 
-- **Ref** observes a stable reference such as an 18% gray card.
-- **Target** observes the sample.
+## 12-bit RAW
 
-Because both regions are captured in the same image, picolor can reduce the influence of small changes in illumination.
+When compared with an 8-bit USB-camera output, picolor has 16 times as many theoretical input levels.
 
-It continuously displays and records:
-
-- **CIELAB** values: `L*` for lightness, `a*` for green–red, and `b*` for blue–yellow;
-- **Linear RGB** values from the camera signal;
-- measurement stability and illumination warnings;
-- exposure settings, reference drift, and quality information;
-- time-series CSV data and measurement snapshots.
-
-The display can be switched between Lab and Linear RGB.
-
-### Preserving small color changes with 12-bit RAW
-
-A key feature of picolor is that it uses **12-bit RAW** data from the Raspberry Pi High Quality Camera directly in its color calculations. This records light intensity more finely than the 8-bit video streams commonly provided by USB cameras.
-
-| Input data | Theoretical levels per RAW pixel value | Relative count |
+| Input | Levels per RAW pixel value | Relative count |
 |---|---:|---:|
-| 8-bit video | 256 levels (0–255) | 1× |
-| picolor 12-bit RAW | 4096 levels (0–4095) | 16× |
+| 8-bit video | 256 (0–255) | 1× |
+| picolor 12-bit RAW | 4096 (0–4095) | 16× |
 
-This finer input preserves small signal changes before they would be rounded to the same 8-bit value. RAW access also avoids many adjustments commonly applied to ordinary video, such as gamma and color processing or JPEG compression, allowing picolor to work with Linear RGB values closer to the sensor signal.
+The current code requests `SBGGR12` from the Raspberry Pi High Quality Camera. It can use fine signal changes before they are rounded to the same 8-bit value.
 
-> [!NOTE]
-> Twelve bits provide **4096 levels, not 2048**. This does not mean that `L*` itself has 4096 fixed steps. picolor calculates `L*` as a floating-point value from the 12-bit R, G, and B inputs. Sensor noise, illumination stability, exposure, reflections, and calibration limit the smallest color difference that can be distinguished in practice, so 4096 input levels are not a guarantee of 4096 levels of measurement accuracy.
+This does not give `L*` 4096 fixed steps. `L*` is calculated as a floating-point value from the 12-bit RGB input. Practical sensitivity also depends on sensor noise, lighting, exposure, reflections, and calibration.
 
-## Color references and calibration
+## Automatic Spyder Checkr detection
 
-picolor uses two physical references:
+- Product used: **Datacolor Spyder Checkr, 48-patch model**
+- Form: rigid, folding two-panel case
+- Japanese JAN product code: `4571380541088`
+- Not supported: SpyderCHECKR 24 or Spyder Checkr Photo/Video
 
-1. **Datacolor Spyder Checkr, 48-patch model**
-   - The unit actually used with picolor is the **rigid, folding two-panel model** with 48 patches (Japanese JAN product code `4571380541088`).
-   - SpyderCHECKR 24, Spyder Checkr Photo, and Spyder Checkr Video use different patch layouts and are not supported by the current code.
-   - The known Lab values of its 48 patches are used to correct the camera's color response.
-   - The chart does not have to be aligned perfectly with the horizontal edge of the image. picolor automatically detects its **position, in-image tilt or rotation, two panels, and the centers of all 48 patches**, then maps them to the correct reference colors for calibration.
-   - If chart position or orientation cannot be identified with sufficient confidence, picolor stops calibration instead of creating an incorrect color correction.
-2. **18% gray card**
-   - It provides a stable in-frame reference during measurement.
-   - It is used to monitor changes in brightness and color.
+The chart does not need to be perfectly horizontal. picolor automatically detects:
 
-The system also calibrates camera dark noise, illumination non-uniformity, and white balance.
+- its position in the image;
+- tilt or rotation;
+- both panels;
+- the centers of all 48 patches.
 
-## Suitable samples
-
-| Sample or situation | Example | Important consideration |
-|---|---|---|
-| Stirred liquid | Follow a color change in a vessel | Keep reflections, bubbles, and the vessel consistent |
-| Powder or granules | Measure a level surface in a tray | Keep thickness, packing, and shadows consistent |
-| Large object | Measure one fixed area | Fix camera distance, angle, and lighting |
-| Coating, print, or sheet | Compare selected locations | Control gloss and reflection direction |
-| Time-dependent sample | Record reaction, drying, or fading | Do not move the camera or reference |
+It maps the patches to the correct Lab references. If position or orientation confidence is insufficient, calibration stops instead of creating an incorrect correction.
 
 ## Required hardware
 
-### Core equipment
+| Category | Equipment | Notes |
+|---|---|---|
+| Raspberry Pi | Raspberry Pi 5, microSD 32 GB or larger, stable USB-C supply, case and cooling | Tested with the 8 GB model and official 27 W supply |
+| Camera | Raspberry Pi High Quality Camera, IMX477 C/CS-mount | Target of the current code |
+| Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
+| Camera link | Standard–Mini cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | Petit Studios adapter kit; now retired |
+| Color references | 48-patch Spyder Checkr and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
+| Capture setup | White LEDs, diffuser or light tent, white background, fixed mounts | Keep camera, lighting, and sample fixed |
+| Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
 
-- **Raspberry Pi 5** — tested with the 8 GB model
-- **Raspberry Pi High Quality Camera** — IMX477, C/CS-mount version
-- **Raspberry Pi recommended 6 mm wide-angle CS-mount lens**
-  - The recommended 16 mm lens is an option for a narrower field of view.
-- **Short Raspberry Pi Camera Cable Standard–Mini**
-  - Connects the Pi 5's 22-pin camera connector to the first 15-pin CSI–HDMI adapter board.
-- **Raspberry Pi Camera HDMI Cable Extension formerly sold by Pimoroni**
-  - A two-board CSI–HDMI extension kit made by Petit Studios.
-  - This setup uses a robust HDMI cable instead of a long flat CSI ribbon.
-- **Standard HDMI cable**
-  - Connects the two CSI–HDMI adapter boards. Use a short, good-quality cable with all required signal and shield connections.
-- **Short 15-pin CSI camera cable**
-  - Connects the camera-side adapter board to the HQ Camera.
-- **Stable USB-C power supply** — official Raspberry Pi 27 W supply or equivalent 5 V / 5 A supply
-- **microSD card, 32 GB or larger**, with 64-bit Raspberry Pi OS
-- **Datacolor Spyder Checkr, 48-patch rigid folding two-panel model**
-  - The unit used for this system has Japanese JAN product code `4571380541088`.
-  - Use the model that opens into two panels containing 48 patches in total, not the 24, Photo, or Video model.
-- **18% gray card**
-- **Stable white LED lighting**
-- **Light tent, diffuser, or softbox**
-- **Tripod, mounting arm, or fixed camera fixture**
-- **Uniform white background**
-- **Lens cap** for dark calibration
-- **HDMI monitor, keyboard, and mouse** for setup and operation
-
-### Choose according to sample size
-
-- Small objects: an LED light tent around 60 cm wide
-- Large objects: two LED lights, two softboxes, and two light stands
-- Long operation: a Raspberry Pi case with a fan or Active Cooler
-- Reproducible work: a fixture that keeps the camera, gray card, and sample in the same positions
-
-Stable geometry and lighting matter more than expensive equipment.
-
-Official references:
-
-- [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
-- [Raspberry Pi High Quality Camera specifications](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
-- [Raspberry Pi camera software: RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
-- [Raspberry Pi Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
-- [Pimoroni: Raspberry Pi Camera HDMI Cable Extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension) (retired product)
-- [Datacolor Spyder Checkr, 48-patch model](https://www.datacolor.com/spyder/products/spyder-checkr/)
-
-### Camera cable connection
-
-The tested system is connected as follows:
+### Camera connection
 
 ```text
-Raspberry Pi 5 CAM/DISP connector
-  → short Standard–Mini camera cable
+Raspberry Pi 5 CAM/DISP
+  → Standard–Mini camera cable
   → CSI–HDMI adapter board
   → standard HDMI cable
   → CSI–HDMI adapter board
-  → short 15-pin CSI camera cable
-  → Raspberry Pi High Quality Camera
+  → 15-pin CSI camera cable
+  → High Quality Camera
 ```
 
 > [!CAUTION]
-> In this setup, HDMI cable is only used as wiring for the extended camera signal. Never connect this cable to the Raspberry Pi's micro-HDMI display output or to a monitor. Power off the Raspberry Pi before connecting or disconnecting any camera cable. Pimoroni's former product page notes that an HDMI cable without the required data shielding may prevent camera detection.
+> The HDMI cable carries the extended camera signal. Never connect it to a Raspberry Pi display output or a monitor. Power off the Pi before changing camera wiring. Use a short HDMI cable with the required signal and shield connections.
 
-## Software setup
+## Setup
 
-The 64-bit Raspberry Pi OS Desktop edition is recommended.
+64-bit Raspberry Pi OS Desktop is recommended.
 
 ```bash
 sudo apt update
 sudo apt install -y \
-  git \
-  python3 \
-  python3-numpy \
-  python3-opencv \
-  python3-pil \
-  python3-picamera2 \
-  python3-scipy \
-  fonts-noto-cjk
+  git python3 python3-numpy python3-opencv python3-pil \
+  python3-picamera2 python3-scipy fonts-noto-cjk
 ```
 
-Connect the camera and both adapter boards as shown above while the Raspberry Pi is powered off. Use the Standard–Mini cable between the Pi 5 and the first adapter board.
-
-Test the camera:
+Check the camera:
 
 ```bash
 rpicam-hello --timeout 5000
@@ -171,93 +101,92 @@ cd picolor
 python3 -u -c "from csi.main import main; main()"
 ```
 
-Do not begin production measurements before calibration.
-
 ## First calibration
 
-Follow the on-screen instructions in this order:
+Follow the on-screen guide in this order.
 
-1. Fit the lens cap and press `D` to capture dark noise.
-2. Remove the cap and all samples, show only a uniform white background, and press `F` to correct illumination non-uniformity.
-3. Place the 18% gray card and press `W` to set white balance and the measurement reference.
-4. Open and place the 48-patch Spyder Checkr, then press `P`.
-   - It does not need to be perfectly horizontal. Keep the complete chart inside the image and make sure that reflections or shadows do not hide its patches.
-   - picolor automatically detects the chart position and tilt, then uses all 48 patches to correct the camera's color response.
-   - Detection can fail if the chart is turned far sideways, partly outside the image, strongly reflected, or heavily shadowed.
-5. Remove the chart. Put the gray card inside the `Ref` region and the sample inside the `Target` region.
+| Step | Key | Place in view | Purpose |
+|---:|:---:|---|---|
+| 1 | `D` | Lens cap | Dark-noise correction |
+| 2 | `F` | Uniform white background | Illumination non-uniformity correction |
+| 3 | `W` | 18% gray card | White balance and relative reference |
+| 4 | `P` | Open 48-patch Spyder Checkr | 48-patch color correction |
 
-Wait until the display reports that measurement is allowed.
+The Spyder Checkr need not be horizontal, but keep the full chart visible without reflections or shadows covering its patches. Detection may fail if the chart is far sideways, outside the frame, strongly reflected, or heavily shadowed.
 
 ## Measurement
 
 1. Align `Ref` with the 18% gray card.
-2. Align `Target` with the area of the sample to measure.
-3. Wait for stable values and a measurement-ready indication.
-4. Press `m` and enter an output name.
-5. Press `s` to stop recording.
-6. Press `q` or `ESC` to quit.
+2. Align `Target` with the sample area.
+3. Wait for the measurement-ready indication.
+4. Press `m` to start recording and `s` to stop.
+5. Press `q` or `ESC` to quit.
+
+<details>
+<summary><strong>Suitable samples and considerations</strong></summary>
+
+| Sample | Use | Consideration |
+|---|---|---|
+| Stirred liquid | Follow reactions or color adjustment | Keep bubbles, vessel, and reflections consistent |
+| Powder or granules | Compare surface color | Keep thickness, packing, and shadows consistent |
+| Large object | Continuously measure one area | Fix distance, angle, and ambient light |
+| Coating or print | Compare selected locations | Control gloss and reflection direction |
+| Changing sample | Record drying, fading, or reaction | Do not move the camera or reference |
+
+</details>
+
+<details>
+<summary><strong>Controls and saved data</strong></summary>
 
 | Key | Action |
-|---|---|
-| `D` | Dark-noise calibration |
-| `F` | Illumination non-uniformity calibration |
-| `W` | Gray-card reference and white balance |
-| `P` | SpyderCHECKR 48 color calibration |
+|:---:|---|
+| `D` / `F` / `W` / `P` | Dark / flat / gray-card / 48-patch calibration |
 | `V` | Verify the gray-card state |
-| `Tab` | Switch Lab / Linear RGB display |
-| `m` | Start continuous recording |
-| `s` | Stop continuous recording |
-| `c` | Start recalibration after a condition change |
+| `Tab` | Switch Lab / Linear RGB |
+| `m` / `s` | Start / stop continuous recording |
+| `c` | Recalibrate after a setup change |
 | `q` / `ESC` | Quit |
 
-## Saved data
+Saved data can include time-series CSV, timestamps, exposure, gain, reference state, warnings, snapshots, and calibration records.
 
-picolor can save:
+- Calibration: `calibration/`
+- Results: `/home/<user>/picolor/results/`
 
-- Lab or Linear RGB time-series CSV files;
-- timestamps, exposure time, and gain;
-- reference brightness, color, and uniformity;
-- stability and warning states;
-- snapshots with measurement values;
-- dated calibration and acceptance records.
+</details>
 
-Calibration files are stored under `calibration/`. Measurement results are stored under `/home/<user>/picolor/results/` on Raspberry Pi. These files can contain experiment details or sample names and should not be committed to GitHub.
+<details>
+<summary><strong>Measurement method and limitations</strong></summary>
 
-## Limitations
+- `Ref` and `Target` are measured in the same image to reduce illumination drift.
+- The Spyder Checkr provides known Lab values as the absolute reference; the 18% gray card is the relative in-frame reference.
+- Dark noise, illumination non-uniformity, and white balance are also corrected.
+- picolor does not measure wavelength spectra or UV-Vis absorbance.
+- Gloss, bubbles, shadows, ambient light, distance, and angle affect results.
+- Recalibrate after changing the camera, lighting, distance, aperture, or reference placement.
+- Accuracy equivalent to a commercial colorimeter is not guaranteed. Validate with known samples for each intended use.
 
-- picolor does not measure a wavelength spectrum.
-- It cannot measure a UV-Vis absorbance spectrum.
-- Accurate transmission measurements require a controlled cell, optical path, and background that are not included here.
-- Gloss, reflections, bubbles, shadows, and ambient light can strongly affect results.
-- Recalibrate after changing the camera, lighting, distance, angle, aperture, or reference placement.
-- Color charts and gray cards can age, fade, or become dirty.
-- Accuracy equivalent to a commercial colorimeter is not guaranteed. Validate the system with known samples for each intended application.
+</details>
 
-## Source layout
+<details>
+<summary><strong>Public scope and technical references</strong></summary>
 
-```text
-csi/
-├── main.py                 # Application entry and processing loop
-├── camera.py               # CSI camera and RAW capture
-├── colorimeter_common.py   # Color calculation, calibration, gates, and storage
-├── key_handler.py          # Keyboard controls and calibration workflow
-├── overlay.py              # On-screen interface
-├── logger.py               # CSV logging
-├── flat_2d_smoothed.py     # Illumination non-uniformity correction
-├── flat_radial_profile.py  # Radial shading helper
-└── key_commands.py         # Key decisions
-```
+The public repository contains only the required Python code under `csi/`. It excludes SSH settings, host addresses, passwords, private deployment scripts, calibration data, and experimental data.
 
-This public repository does not include SSH configuration, host addresses, passwords, private deployment scripts, calibration files, or experimental data.
+- [Raspberry Pi Camera documentation](https://www.raspberrypi.com/documentation/accessories/camera.html)
+- [High Quality Camera](https://www.raspberrypi.com/products/raspberry-pi-high-quality-camera/)
+- [RAW mode and bit depth](https://www.raspberrypi.com/documentation/computers/camera_software.html#mode)
+- [Camera Cable](https://www.raspberrypi.com/products/camera-cable/)
+- [Pimoroni CSI–HDMI extension](https://shop.pimoroni.com/products/pi-camera-hdmi-cable-extension)
+- [Datacolor Spyder Checkr](https://www.datacolor.com/spyder/products/spyder-checkr/)
 
-## Project status
-
-picolor is under active experimental development. Behavior may change with hardware or Raspberry Pi OS updates.
+</details>
 
 ## License
 
-No reuse license is currently granted. Contact the repository owner before using, modifying, or redistributing the code.
+[MIT License](LICENSE)
 
-## Trademarks
+## Status
 
-Raspberry Pi is a trademark of Raspberry Pi Ltd. Datacolor and SpyderCHECKR are trademarks of their respective owners. This is an independent project and is not an official product or warranty from those companies.
+picolor is under active experimental development. Raspberry Pi OS or hardware updates may change its behavior.
+
+Raspberry Pi, Datacolor, and SpyderCHECKR are trademarks of their respective owners. This project is not an official product of those companies.
