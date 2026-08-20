@@ -53,6 +53,8 @@ The chart does not need to be perfectly horizontal. picolor automatically detect
 
 It maps the patches to the correct Lab references. If position or orientation confidence is insufficient, calibration stops instead of creating an incorrect correction.
 
+During measurement, place the 18% gray side of the [**GIN-ICHI Silk Gray Card Ver.2**](https://www.ginichi.com/shop/g/g13819/) inside the `Ref` region as the relative reference.
+
 ## Supported platform
 
 | Item | Current requirement |
@@ -77,7 +79,7 @@ It maps the patches to the correct Lab references. If position or orientation co
 | Camera | Raspberry Pi High Quality Camera, IMX477 C/CS-mount | Target of the current code |
 | Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
 | Camera link | Model-specific camera cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | The first cable differs between Pi 4 and Pi 5. Petit Studios adapter kit; now retired |
-| Color references | [Color-reference chart (48-patch Spyder Checkr)](https://www.datacolor.com/spyder/products/spyder-checkr/) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
+| Color references | [Color-reference chart (48-patch Spyder Checkr)](https://www.datacolor.com/spyder/products/spyder-checkr/) and [18% gray card (GIN-ICHI Silk Gray Card Ver.2)](https://www.ginichi.com/shop/g/g13819/) | Two A4 cards per pack; use the 18% gray front side |
 | Capture setup (small samples) | [HAKUBA LED Studio Box 60 (AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
 | Capture setup (large samples) | White LEDs, diffuser or softboxes, white background, fixed mounts | Keep camera, lighting, and sample fixed |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |

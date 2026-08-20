@@ -53,6 +53,8 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 判定の確信度が不足した場合は、誤った色補正を防ぐため校正を中止する。
 
+測定中は、[**GIN-ICHI（銀一）シルクグレーカードVer.2**](https://www.ginichi.com/shop/g/g13819/)の18%グレー面を`Ref`枠へ入れ、相対基準として使う。
+
 ## 動作環境
 
 | 項目 | 現行版の条件 |
@@ -77,7 +79,7 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 | カメラ | Raspberry Pi High Quality Camera（IMX477、C/CSマウント） | 現行コードの対象 |
 | レンズ | Raspberry Pi 6 mm広角レンズ（CSマウント） | 16 mmレンズも選択可 |
 | カメラ配線 | 機種別カメラケーブル、PimoroniのCSI–HDMI中継基板2枚、標準HDMIケーブル、短い15ピンCSIケーブル | Pi 4とPi 5では最初のケーブルが異なる。中継基板はPetit Studios製、現在は取扱終了 |
-| 色基準 | [色基準チャート（Spyder Checkr 48色モデル）](https://www.datacolor.jp/camera-solution/spyder-checkr.html)、18%グレーカード | 実機のグレーカードは銀一シルクグレーカード Ver.2 |
+| 色基準 | [色基準チャート（Spyder Checkr 48色モデル）](https://www.datacolor.jp/camera-solution/spyder-checkr.html)、[18%グレーカード（銀一シルクグレーカードVer.2）](https://www.ginichi.com/shop/g/g13819/) | グレーカードはA4判2枚入り。表面の反射率18%側を使用 |
 | 撮影環境（小型試料） | [HAKUBA LEDスタジオボックス60（AMZLEDSBX60）](https://www.amazon.co.jp/dp/B0923V3439)、固定具 | 約64×62×63 cm。LEDと背景布3色（白・黒・オレンジ）が付属 |
 | 撮影環境（大型試料） | 白色LED、拡散板またはソフトボックス、白背景、固定具 | カメラ・照明・試料を固定 |
 | 校正・操作 | レンズキャップ、HDMIモニター、キーボード、マウス | 初期設定と画面操作に使用 |
