@@ -101,6 +101,7 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 | 色基準2 | [18%グレーカード（銀一シルクグレーカードVer.2）](https://www.ginichi.com/shop/g/g13819/) | `Ref`枠に置く相対基準。A4判2枚入り、表面の反射率18%側を使用 |
 | 撮影環境（小型試料） | [簡易暗室（HAKUBA LEDスタジオボックス60、AMZLEDSBX60）](https://www.amazon.co.jp/dp/B0923V3439)、固定具 | 約64×62×63 cm。LEDと背景布3色（白・黒・オレンジ）が付属 |
 | 撮影環境（大型試料） | 同一型番の[撮影用LED照明（Ulanziなど）](https://www.ulanzi.jp/collections/led-rgb-video-lights)3セット、拡散板またはソフトボックス、白背景、固定具 | 位置、角度、距離、色温度、出力を固定 |
+| 照明スタンド（大型試料） | [NEEWER SC320 Cスタンド（最大320 cm、ブームアーム付き）](https://neewer.jp/products/neewer-320cm-c-stand-with-boom-arm-66600020)、転倒防止用サンドバッグ | 必要数を用意。3灯を個別に固定する場合は3台 |
 | 校正・操作 | レンズキャップ、HDMIモニター、キーボード、マウス | 初期設定と画面操作に使用 |
 
 ### カメラ接続

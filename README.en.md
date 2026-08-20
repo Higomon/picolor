@@ -101,6 +101,7 @@ A light tent or three fixed lighting sets make it easier to control the light re
 | Color reference 2 | [18% gray card (GIN-ICHI Silk Gray Card Ver.2)](https://www.ginichi.com/shop/g/g13819/) | Relative reference placed in `Ref`; two A4 cards per pack, using the 18% gray front side |
 | Capture setup (small samples) | [Light tent (HAKUBA LED Studio Box 60, AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
 | Capture setup (large samples) | Three identical sets of [photography LED lights such as Ulanzi](https://www.ulanzi.com/collections/lighting), diffuser or softboxes, white background, fixed mounts | Fix position, angle, distance, color temperature, and output |
+| Light stands (large samples) | [NEEWER SC320 C-stand (up to 320 cm, with boom arm)](https://neewer.com/collections/photography-light-stand/products/lighting-studio-66600020), counterweight sandbags | Use as many as needed; use three when mounting three lights separately |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
 
 ### Camera connection
