@@ -16,7 +16,7 @@ It is designed for stirred liquids, powders, large objects, coatings, and other 
 | Continuous measurement | A movable `Ref` region observes an 18% gray card while `Target` observes the sample |
 | Two color views | Switch between Lab (`L*`, `a*`, `b*`) and Linear RGB |
 | 12-bit RAW analysis | Calculate color from signals close to the camera sensor output |
-| Color correction | Correct the camera response against the known Lab values of 48 Spyder Checkr patches |
+| Color correction | Correct the camera response against the known Lab values of a color reference (48-patch Spyder Checkr) |
 | Quality monitoring | Report stability, illumination changes, non-uniformity, clipping, and recalibration needs |
 | Recording | Save time-series CSV data, capture settings, warnings, and snapshots |
 
@@ -33,7 +33,7 @@ The current code requests `SBGGR12` from the Raspberry Pi High Quality Camera. I
 
 This does not give `L*` 4096 fixed steps. `L*` is calculated as a floating-point value from the 12-bit RGB input. Practical sensitivity also depends on sensor noise, lighting, exposure, reflections, and calibration.
 
-## Automatic Spyder Checkr detection
+## Automatic color-reference detection (Spyder Checkr)
 
 - Product used: **Datacolor Spyder Checkr, 48-patch model**
 - Form: rigid, folding two-panel case
@@ -57,7 +57,7 @@ It maps the patches to the correct Lab references. If position or orientation co
 | Camera | Raspberry Pi High Quality Camera, IMX477 C/CS-mount | Target of the current code |
 | Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
 | Camera link | Standard–Mini cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | Petit Studios adapter kit; now retired |
-| Color references | 48-patch Spyder Checkr and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
+| Color references | Color-reference chart (48-patch Spyder Checkr) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
 | Capture setup | White LEDs, diffuser or light tent, white background, fixed mounts | Keep camera, lighting, and sample fixed |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
 
@@ -110,9 +110,9 @@ Follow the on-screen guide in this order.
 | 1 | `D` | Lens cap | Dark-noise correction |
 | 2 | `F` | Uniform white background | Illumination non-uniformity correction |
 | 3 | `W` | 18% gray card | White balance and relative reference |
-| 4 | `P` | Open 48-patch Spyder Checkr | 48-patch color correction |
+| 4 | `P` | Open color reference (48-patch Spyder Checkr) | 48-patch color correction |
 
-The Spyder Checkr need not be horizontal, but keep the full chart visible without reflections or shadows covering its patches. Detection may fail if the chart is far sideways, outside the frame, strongly reflected, or heavily shadowed.
+The color reference (Spyder Checkr) need not be horizontal, but keep the full chart visible without reflections or shadows covering its patches. Detection may fail if the chart is far sideways, outside the frame, strongly reflected, or heavily shadowed.
 
 ## Measurement
 
@@ -158,7 +158,7 @@ Saved data can include time-series CSV, timestamps, exposure, gain, reference st
 <summary><strong>Measurement method and limitations</strong></summary>
 
 - `Ref` and `Target` are measured in the same image to reduce illumination drift.
-- The Spyder Checkr provides known Lab values as the absolute reference; the 18% gray card is the relative in-frame reference.
+- The color reference (Spyder Checkr) provides known Lab values as the absolute reference; the 18% gray card is the relative in-frame reference.
 - Dark noise, illumination non-uniformity, and white balance are also corrected.
 - picolor does not measure wavelength spectra or UV-Vis absorbance.
 - Gloss, bubbles, shadows, ambient light, distance, and angle affect results.
