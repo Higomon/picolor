@@ -63,9 +63,12 @@ During measurement, place the 18% gray side of the [**GIN-ICHI Silk Gray Card Ve
 | What to control | Key point |
 |---|---|
 | Lighting | Keep position, angle, distance, brightness, color, and diffusion fixed |
+| Ambient light | Block it with a light tent such as the [HAKUBA LED Studio Box 60](https://www.amazon.co.jp/dp/B0923V3439), or arrange three identical sets of [photography LED lights such as Ulanzi](https://www.ulanzi.com/collections/lighting) |
 | Minor lighting degradation | If only brightness decreases slightly, using the same references under the same conditions helps preserve relative repeatability |
 | Recalibration | A gray card cannot fully correct changes in illumination color, uniformity, angle, or distance; recalibrate with the Spyder Checkr |
 | References | Use the same products with the same face, orientation, and placement |
+
+A light tent or three fixed lighting sets make it easier to control the light reaching the sample when room lighting or daylight changes, improving measurement repeatability.
 
 > [!CAUTION]
 > **Do not touch the colored surfaces of the Spyder Checkr or gray card with bare hands.** Skin oils, dirt, scratches, and fading change the reference and reduce repeatability. Hold the edges or use clean gloves, then store the references away from light and dust. Replace dirty or faded references.
@@ -96,8 +99,8 @@ During measurement, place the 18% gray side of the [**GIN-ICHI Silk Gray Card Ve
 | Camera link | Model-specific camera cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | The first cable differs between Pi 4 and Pi 5. Petit Studios adapter kit; now retired |
 | Color reference 1 | [Color-reference chart (48-patch Spyder Checkr)](https://www.datacolor.com/spyder/products/spyder-checkr/) | Used for correction against 48 known Lab values |
 | Color reference 2 | [18% gray card (GIN-ICHI Silk Gray Card Ver.2)](https://www.ginichi.com/shop/g/g13819/) | Relative reference placed in `Ref`; two A4 cards per pack, using the 18% gray front side |
-| Capture setup (small samples) | [HAKUBA LED Studio Box 60 (AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
-| Capture setup (large samples) | White LEDs, diffuser or softboxes, white background, fixed mounts | Keep camera, lighting, and sample fixed |
+| Capture setup (small samples) | [Light tent (HAKUBA LED Studio Box 60, AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
+| Capture setup (large samples) | Three identical sets of [photography LED lights such as Ulanzi](https://www.ulanzi.com/collections/lighting), diffuser or softboxes, white background, fixed mounts | Fix position, angle, distance, color temperature, and output |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
 
 ### Camera connection
