@@ -1,0 +1,41 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Editors and operating-system files
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# Runtime calibration and measurement data
+calibration/
+results/
+results_*/
+analysis/
+logs/
+*.npy
+*.npz
+*.csv
+*.log
+*.mp4
+
+# Local deployment and machine-specific files
+scripts/rpi_env.sh
+*.pid
+.software_version
+.git_revision
