@@ -86,14 +86,11 @@ During measurement, place the 18% gray side of the [**GIN-ICHI Silk Gray Card Ve
 
 ### Camera connection
 
-| Raspberry Pi | Camera connector | First cable |
-|---|---|---|
-| Pi 4 Model B | Standard 15-pin `CAMERA` | Standard–Standard |
-| Pi 5 | Mini 22-pin `CAM/DISP` | Standard–Mini |
+Use a Standard–Standard camera cable with Pi 4, or a Standard–Mini cable with Pi 5.
 
 ```text
 Raspberry Pi
-  → model-specific camera cable shown above
+  → camera cable
   → CSI–HDMI adapter board
   → standard HDMI cable
   → CSI–HDMI adapter board

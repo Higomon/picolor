@@ -86,14 +86,11 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 
 ### カメラ接続
 
-| Raspberry Pi | カメラ端子 | 最初のケーブル |
-|---|---|---|
-| Pi 4 Model B | 標準15ピン `CAMERA` | Standard–Standard |
-| Pi 5 | Mini 22ピン `CAM/DISP` | Standard–Mini |
+Pi 4にはStandard–Standard、Pi 5にはStandard–Miniのカメラケーブルを使う。
 
 ```text
 Raspberry Pi
-  → 上表の機種別カメラケーブル
+  → カメラケーブル
   → CSI–HDMI中継基板
   → 標準HDMIケーブル
   → CSI–HDMI中継基板
