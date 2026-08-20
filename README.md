@@ -208,9 +208,3 @@ python3 -u -c "from csi.main import main; main()"
 ## ライセンス
 
 [MIT License](LICENSE)
-
-## 状態
-
-実験・研究用途として開発中である。Raspberry Pi OSやハードウェアの更新により動作が変わる場合がある。
-
-Raspberry Pi、Datacolor、SpyderCHECKRは各権利者の商標である。本プロジェクトは各社の公式製品ではない。

@@ -208,9 +208,3 @@ Saved data can include time-series CSV, timestamps, exposure, gain, reference st
 ## License
 
 [MIT License](LICENSE)
-
-## Status
-
-picolor is under active experimental development. Raspberry Pi OS or hardware updates may change its behavior.
-
-Raspberry Pi, Datacolor, and SpyderCHECKR are trademarks of their respective owners. This project is not an official product of those companies.
