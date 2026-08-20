@@ -39,7 +39,7 @@ This does not give `L*` 4096 fixed steps. `L*` is calculated as a floating-point
 
 ## Automatic color-reference detection (Spyder Checkr)
 
-- Product used: **Datacolor Spyder Checkr, 48-patch model**
+- Product used: [**Datacolor Spyder Checkr, 48-patch model**](https://www.datacolor.com/spyder/products/spyder-checkr/)
 - Form: rigid, folding two-panel case
 - Japanese JAN product code: `4571380541088`
 - Not supported: SpyderCHECKR 24 or Spyder Checkr Photo/Video
@@ -77,7 +77,7 @@ It maps the patches to the correct Lab references. If position or orientation co
 | Camera | Raspberry Pi High Quality Camera, IMX477 C/CS-mount | Target of the current code |
 | Lens | Raspberry Pi 6 mm wide-angle CS-mount lens | The 16 mm lens is also an option |
 | Camera link | Model-specific camera cable, two Pimoroni CSI–HDMI adapter boards, standard HDMI cable, short 15-pin CSI cable | The first cable differs between Pi 4 and Pi 5. Petit Studios adapter kit; now retired |
-| Color references | Color-reference chart (48-patch Spyder Checkr) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
+| Color references | [Color-reference chart (48-patch Spyder Checkr)](https://www.datacolor.com/spyder/products/spyder-checkr/) and 18% gray card | Gin-ichi Silk Gray Card Ver.2 used in the tested system |
 | Capture setup (small samples) | [HAKUBA LED Studio Box 60 (AMZLEDSBX60)](https://www.amazon.co.jp/dp/B0923V3439), fixed mounts | Approx. 64×62×63 cm; includes LEDs and white, black, and orange backgrounds |
 | Capture setup (large samples) | White LEDs, diffuser or softboxes, white background, fixed mounts | Keep camera, lighting, and sample fixed |
 | Calibration and control | Lens cap, HDMI monitor, keyboard, mouse | Used for setup and operation |
