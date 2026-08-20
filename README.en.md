@@ -55,6 +55,21 @@ It maps the patches to the correct Lab references. If position or orientation co
 
 During measurement, place the 18% gray side of the [**GIN-ICHI Silk Gray Card Ver.2**](https://www.ginichi.com/shop/g/g13819/) inside the `Ref` region as the relative reference.
 
+## Keys to repeatability
+
+> [!IMPORTANT]
+> **For color measurement, lighting and reference management matter more than camera performance.**
+
+| What to control | Key point |
+|---|---|
+| Lighting | Keep position, angle, distance, brightness, color, and diffusion fixed |
+| Minor lighting degradation | If only brightness decreases slightly, using the same references under the same conditions helps preserve relative repeatability |
+| Recalibration | A gray card cannot fully correct changes in illumination color, uniformity, angle, or distance; recalibrate with the Spyder Checkr |
+| References | Use the same products with the same face, orientation, and placement |
+
+> [!CAUTION]
+> **Do not touch the colored surfaces of the Spyder Checkr or gray card with bare hands.** Skin oils, dirt, scratches, and fading change the reference and reduce repeatability. Hold the edges or use clean gloves, then store the references away from light and dust. Replace dirty or faded references.
+
 ## Supported platform
 
 | Item | Current requirement |
