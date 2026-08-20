@@ -54,7 +54,7 @@ Raspberry PiとCSIカメラの**12 bit RAW**を使い、映像内の任意位置
 | 項目 | 現行版の条件 |
 |---|---|
 | 本体 | Raspberry Pi 5（8 GB版で確認） |
-| OS | Raspberry Pi OS 64-bit Desktop（Debian GNU/Linux 12 Bookworm） |
+| OS | Raspberry Pi OS 64-bit Desktop（Debian 13 Trixie） |
 | カメラ | High Quality Camera（IMX477）をCSI接続 |
 | RAW入力 | 12 bit `SBGGR12` |
 | カメラAPI | Picamera2／libcamera |
@@ -94,7 +94,7 @@ Raspberry Pi 5 CAM/DISP
 
 ## セットアップ
 
-動作確認済みOSはRaspberry Pi OS 64-bit Desktop（Debian 12 Bookworm）である。
+動作確認済みOSはRaspberry Pi OS 64-bit Desktop（Debian 13 Trixie）である。
 
 ```bash
 sudo apt update

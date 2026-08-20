@@ -54,7 +54,7 @@ It maps the patches to the correct Lab references. If position or orientation co
 | Item | Current requirement |
 |---|---|
 | Computer | Raspberry Pi 5 (tested with the 8 GB model) |
-| OS | 64-bit Raspberry Pi OS Desktop (Debian GNU/Linux 12 Bookworm) |
+| OS | 64-bit Raspberry Pi OS Desktop (Debian 13 Trixie) |
 | Camera | High Quality Camera (IMX477) connected through CSI |
 | RAW input | 12-bit `SBGGR12` |
 | Camera API | Picamera2/libcamera |
@@ -94,7 +94,7 @@ Raspberry Pi 5 CAM/DISP
 
 ## Setup
 
-The tested OS is 64-bit Raspberry Pi OS Desktop based on Debian 12 Bookworm.
+The tested OS is 64-bit Raspberry Pi OS Desktop based on Debian 13 Trixie.
 
 ```bash
 sudo apt update
